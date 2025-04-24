@@ -21,10 +21,8 @@ export default function RootLayout({
 
     <html lang="en">
       <body className="h-[100vh] w-[100vw]">
-        
-          {children}
-        
-        
+        {children}
+
       </body>
     </html>
   );
