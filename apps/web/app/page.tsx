@@ -61,7 +61,7 @@ function RealPage() {
   const session = useSession();
   useEffect(()=>{
     if (session.status == "authenticated") {
-      router.push("/home");
+      router.push("/contests");
     }
   },[session.status]);
   
@@ -85,7 +85,7 @@ function RealPage() {
           <button onClick={()=>{router.push("/signup")}} className="bg-blue-600 text-white px-8 py-3 rounded-full text-lg font-medium hover:bg-blue-700 transition">
             Sign Up
           </button>
-          <button onClick={() => { signIn("credentials", { callbackUrl: "/home" }); }} className="border border-gray-400 px-8 py-3 rounded-full text-lg font-medium hover:border-blue-500 hover:text-blue-600 transition">
+          <button onClick={() => { signIn("credentials", { callbackUrl: "/contests" }); }} className="border border-gray-400 px-8 py-3 rounded-full text-lg font-medium hover:border-blue-500 hover:text-blue-600 transition">
             Log In
           </button>
         </div>

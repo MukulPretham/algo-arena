@@ -1,9 +1,16 @@
 "use client"
 import React from 'react'
 import { signOut, useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 const NavBar = () => {
     const router = useRouter();
+    const pathname = usePathname();
+    let styles = {};
+    styles = {
+        cursor: "pointer",
+        color: `red`
+    }
+    
     // const session = useSession();
     // console.log(session);
     return (
@@ -17,9 +24,9 @@ const NavBar = () => {
             alignItems: "center",
             gap: "55px"
         }}>
-            <span style={{ cursor: "pointer" }}>Contests</span>
-            <span style={{ cursor: "pointer" }}>Problem sets</span>
-            <span style={{ cursor: "pointer" }}>Leadrboard</span>
+            <span onClick={()=>{router.push("/contests")}} style={pathname == "/contests" ? styles : { cursor: "pointer" }  }>Contests</span>
+            <span onClick={()=>{router.push("/problem-sets")}} style={pathname == "/problem-sets" ? styles : { cursor: "pointer" }  }>Problem sets</span>
+            <span onClick={()=>{router.push("/leaderboard")}} style={pathname == "/leaderboard" ? styles : { cursor: "pointer" }  } >Leadrboard</span>
             <button
                 onClick={()=>{
                     signOut({ callbackUrl: "/" })
