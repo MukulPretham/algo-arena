@@ -20,3 +20,20 @@ model User {
   password String 
   email String @unique
 }
+
+model Problem {
+  id String @default(uuid()) @id
+  title String
+  statement String @unique
+  type String
+  TestCases TestCases[]
+}
+
+model TestCases {
+  id String @default(uuid()) @id
+  problemId String
+  testCaseInput String
+  testCaseOutput String
+  explanation String 
+  testCase Problem @relation(fields: [problemId], references: [id])
+}
