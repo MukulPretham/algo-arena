@@ -3,7 +3,7 @@ import { SessionProvider, useSession } from "next-auth/react";
 import { signIn } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { Children, useEffect } from "react";
 
 function Gradient({
   conic,
@@ -46,19 +46,25 @@ const LINKS = [
   },
 ];
 
-export default function Home() {
+export default function Home({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return <SessionProvider>
-    <Landing />
+    <Page/>
   </SessionProvider>
 }
 
-function Landing() {
+function Page() {
   const router = useRouter();
   const session = useSession();
-
-  if (session.status == "authenticated") {
-    router.push("/home");
-  }
+  useEffect(()=>{
+    if (session.status == "authenticated") {
+      router.push("/home");
+    }
+  },[session.status]);
+  
   // useEffect(() => {
   //   console.log(session);
   //   if (session.status = "authenticated") {
@@ -76,7 +82,7 @@ function Landing() {
           CodeArena is your competitive edge in algorithm mastery. Weekly contests, rich problem sets, real-time rankings, and detailed solutions — all crafted for coders who want to win.
         </p>
         <div className="flex gap-6">
-          <button className="bg-blue-600 text-white px-8 py-3 rounded-full text-lg font-medium hover:bg-blue-700 transition">
+          <button onClick={()=>{router.push("/signup")}} className="bg-blue-600 text-white px-8 py-3 rounded-full text-lg font-medium hover:bg-blue-700 transition">
             Sign Up
           </button>
           <button onClick={() => { signIn(); }} className="border border-gray-400 px-8 py-3 rounded-full text-lg font-medium hover:border-blue-500 hover:text-blue-600 transition">

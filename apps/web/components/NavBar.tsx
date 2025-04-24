@@ -1,9 +1,11 @@
 "use client"
 import React from 'react'
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 const NavBar = () => {
     const router = useRouter();
+    // const session = useSession();
+    // console.log(session);
     return (
         <div style={{
             border: "2px solid black",

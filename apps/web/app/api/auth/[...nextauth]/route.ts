@@ -1,8 +1,11 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
+import { client } from "@repo/db/client"
 import GoogleProvider from "next-auth/providers/google";
 
 import { use } from "react";
+
+
 
 const handler = NextAuth({
     providers: [
@@ -12,25 +15,39 @@ const handler = NextAuth({
     
             credentials: {
                 username: { label: "Username", type: "text", placeholder: "username" },
-                email: { label: "email", type: "text", placeholder: "email" },
+                
                 password: { label: "Password", type: "password", placeholder: "password" }
             },
             //@ts-ignore
             async authorize(credentials, req) {
                 let username = credentials?.username;
-                let email = credentials?.email;
+                
                 let password = credentials?.password;
+                if(!username || !password ){
+                    return null;
+                }
                 console.log(username);
                 //Hit the database and verigy the details
-                let user = {
-                    id: 2,
-                    name : "Mukul",
-                    email: "Mukulpretham@gmail.com"
+                try{
+                    
+                    const currUser = await client.user.findFirst({
+                        where: {
+                            username: username,
+                            password: password
+                        }
+                    });
+                    if(!currUser){
+                        return null;
+                    }
+                    console.log(currUser);
+                    return {
+                        id: currUser?.id,
+                        name: currUser?.username,
+                        email: currUser?.email
+                    }
+                }catch(err){
+                    return null;
                 }
-                if(user){
-                    return user
-                }
-                return null;
             }
         }),
     ],
