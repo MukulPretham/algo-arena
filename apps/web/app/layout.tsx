@@ -17,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className="h-[100vh] w-[100vw]">{children}</body>
     </html>
   );
 }
