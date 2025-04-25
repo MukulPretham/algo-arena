@@ -25,7 +25,7 @@ const NavBar = () => {
             gap: "55px"
         }}>
             <span onClick={()=>{router.push("/contests")}} style={pathname == "/contests" ? styles : { cursor: "pointer" }  }>Contests</span>
-            <span onClick={()=>{router.push("/problem-sets")}} style={pathname == "/problem-sets" ? styles : { cursor: "pointer" }  }>Problem sets</span>
+            <span onClick={()=>{router.push("/problem-sets")}} style={pathname == "/problem-sets" || pathname.split("/")[1] === "problem-sets"  ? styles : { cursor: "pointer" }  }>Problem sets</span>
             <span onClick={()=>{router.push("/leaderboard")}} style={pathname == "/leaderboard" ? styles : { cursor: "pointer" }  } >Leadrboard</span>
             <button
                 onClick={()=>{
@@ -37,7 +37,7 @@ const NavBar = () => {
                     paddingRight: "10px",
                     cursor: "pointer"
                 }}
-            >LogOut</button>
+            >Log-Out</button>
         </div>
     )
 }
