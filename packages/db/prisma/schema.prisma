@@ -27,6 +27,7 @@ model Problem {
   statement String @unique
   type String
   TestCases TestCases[]
+  topic ProblemToTopic[]
 }
 
 model TestCases {
@@ -36,4 +37,20 @@ model TestCases {
   testCaseOutput String
   explanation String 
   testCase Problem @relation(fields: [problemId], references: [id])
+}
+
+model Topic {
+  id Int @default(autoincrement()) @id
+  topicName String @unique
+  problems ProblemToTopic[]
+}
+
+model ProblemToTopic{
+  id Int @default(autoincrement()) @id
+  problemId String
+  topicId Int
+  // problem Problem[]
+  // topic Topic[]
+  problemName Problem @relation(fields: [problemId],references: [id])
+  topic Topic @relation(fields: [topicId],references: [id])
 }

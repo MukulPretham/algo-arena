@@ -6,6 +6,7 @@ export async function POST(req: NextRequest) {
     const title = body?.title;
     const statement = body?.statement;
     const type = body?.type;
+    const topic = body?.topic;
     const testCaseInput = body?.testCaseInput;
     const testCaseOutput = body?.testCaseOutput;
     const explanation = body?.explanation
@@ -15,7 +16,7 @@ export async function POST(req: NextRequest) {
             data: {
                 title: title,
                 statement: statement,
-                type: type
+                type: type,
             }
         });
         await client.testCases.create({
@@ -26,6 +27,21 @@ export async function POST(req: NextRequest) {
                 explanation: explanation
             }
         });
+        const currTopic = await client.topic.upsert({
+            where:{
+                topicName: topic
+            },
+            update: { },
+            create:{topicName: topic}
+            
+        })
+        
+        await client.problemToTopic.create({
+            data:{
+                problemId: currProb.id,
+                topicId: currTopic.id
+            }
+        })
         return NextResponse.json({
             status: 200,
             message: "Added !!",
@@ -33,7 +49,7 @@ export async function POST(req: NextRequest) {
         });
     } catch (err) {
         return NextResponse.json(
-            { status: 500,error: `${statement}` }
+            { status: 500,error: `${err}` }
         )
     }
 }
