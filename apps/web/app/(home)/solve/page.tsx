@@ -4,6 +4,7 @@ import { Problem, TestCase } from '../../../utils/types';
 import { useSearchParams } from 'next/navigation';
 import Description from '../../../components/Description';
 import FallBack from '../../../components/FallBack';
+import Code from '../../../components/Code';
 // import Description from '../../../components/Description';
 // import { Problem, TestCase } from '../../../utils/types';
 
@@ -35,6 +36,7 @@ const page = () => {
     <div>
       <Suspense fallback={<>Loading</>} >
         <Description Problem={problem} TestCases={TestCases} />
+        <Code/>
       </Suspense>
     </div>
   )
