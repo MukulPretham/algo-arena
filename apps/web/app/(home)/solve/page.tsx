@@ -33,7 +33,9 @@ const page = () => {
   }, []);
 
   return (
-    <div>
+    <div style={{
+      display: "flex"
+    }}>
       <Suspense fallback={<>Loading</>} >
         <Description Problem={problem} TestCases={TestCases} />
         <Code/>
