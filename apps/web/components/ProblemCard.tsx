@@ -9,9 +9,10 @@ const ProblemCard = ({title, type}:{
         borderRadius: '12px',
         boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
         padding: '30px',
-        maxWidth: '300px',
+        margin: '10px',
+        maxWidth: '1200px',
         fontFamily: 'sans-serif',
-    
+        
       };
     
       const titleStyle = {

@@ -17,7 +17,8 @@ const page = async() => {
       overflow: "scroll"
     }}>
       <div style={{ display: "flex", gap: "20px", padding: "5px 5px 5px 5px", justifyContent: "center" }}>{topics.map((topic) => <Link key={topic.id.toString()} href={`/problem-sets/${topic.topicName}`}><div key={topic.id.toString()}>{topic.topicName}</div></Link>)}</div>
-      {problems.map(problem => <div key={problem.id.toString()}><ProblemCard title={problem.title} type={problem.type}/></div>)}
+      {problems.map(problem => <Link key={problem.id} href={`/solve?id=${problem.id}`}><div key={problem.id.toString()}><ProblemCard title={problem.title} type={problem.type}/></div></Link>)}
+      
     </div>
   )
 }

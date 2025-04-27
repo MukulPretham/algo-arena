@@ -43,7 +43,4 @@ export async function GET(req: NextRequest) {
             messsage: err
         })
     }
-    return NextResponse.json({
-        messsage: pathname
-    })
 }

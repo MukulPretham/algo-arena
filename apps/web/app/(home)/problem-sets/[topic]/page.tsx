@@ -3,6 +3,7 @@ import { usePathname ,useSearchParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { Problem } from '../../../../utils/types';
 import ProblemCard from '../../../../components/ProblemCard';
+import Link from 'next/link';
 
 const page = () => {
     const pathname = usePathname();
@@ -21,11 +22,11 @@ const page = () => {
         <div style={{
             display: "flex",
             flexDirection: "column",
-            gap: "10px"
+            gap: "20px"
         }}>
             {/* @ts-ignore */}
             <h1 style={{fontSize: "24px", padding: "20px 2px 2px 40px",fontWeight: "bold"}}>{pathname.split("/")[2] ? decodeURI(pathname.split("/")[2]):" "}</h1>
-            {problems.map(problem => <div key={problem.id.toString()}><ProblemCard title={problem.title} type={problem.type}/></div>)}
+            {problems.map(problem => <Link key={problem.id.toString()} href={`/solve?id=${problem.id}`}><div key={problem.id.toString()}><ProblemCard title={problem.title} type={problem.type}/></div></Link>)}
         </div>
     )
 }

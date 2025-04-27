@@ -1,11 +1,19 @@
 export type Topics = {
-    topicName : string,
+    topicName: string,
     id: Number
 }
 
 export type Problem = {
-    id: Number
+    id: String
     title: string
-    statement : string
+    statement: string
     type: string
+}
+
+export type TestCase = {
+    id: string,
+    problemId: string,
+    testCaseInput: string,
+    testCaseOutput: string,
+    explanation: string
 }
