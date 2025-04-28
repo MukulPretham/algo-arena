@@ -63,6 +63,9 @@ importers:
       '@types/node':
         specifier: ^22.14.0
         version: 22.14.0
+      '@types/prismjs':
+        specifier: ^1.26.5
+        version: 1.26.5
       '@types/react':
         specifier: ^19.1.0
         version: 19.1.0
@@ -953,6 +956,10 @@ packages:
     resolution: {integrity: sha512-Kmpl+z84ILoG+3T/zQFyAJsU6EPTmOCj8/2+83fSN6djd6I4o7uOuGIH6vq3PrjY5BGitSbFuMN18j3iknubbA==}
     dependencies:
       undici-types: 6.21.0
+    dev: true
+
+  /@types/prismjs@1.26.5:
+    resolution: {integrity: sha512-AUZTa7hQ2KY5L7AmtSiqxlhWxb4ina0yd8hNbl4TWuqnv/pFP0nDMb3YrfSBf4hJVGLh2YEIBfKaBW/9UEl6IQ==}
     dev: true
 
   /@types/react-dom@19.1.1(@types/react@19.1.0):
