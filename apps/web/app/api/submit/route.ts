@@ -11,10 +11,13 @@ export async function POST(req: NextRequest) {
     if (!body) {
         return NextResponse.json({ error: "bad request" })
     }
+
     if (!body.code || !body.lang || !body.problemId) {
         return NextResponse.json({ error: "bad request" })
     }
+
     console.log(body?.problemId);
+    
     try {
         const currProblem = await client.problem.findFirst({
             where: {
