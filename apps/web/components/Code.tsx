@@ -1,5 +1,5 @@
 "use client"
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import Editor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs';
 import 'prismjs/components/prism-clike';
@@ -7,16 +7,46 @@ import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-java';
 import 'prismjs/components/prism-c';   // first import C
 import 'prismjs/components/prism-cpp'; // then import C++
+import fs from "fs";
 
 import 'prismjs/themes/prism.css';
+import { useSearchParams } from 'next/navigation';
+import { verify } from '../utils/utils';
+
+
 
 const Code = () => {
   const [code, setCode] = React.useState(
     `function add(a, b) {\n  return a + b;\n}`
   );
+  const params = useSearchParams();
+
   const langRef = useRef<HTMLSelectElement>(null);
   const selectedLanguage = langRef.current?.value || "javascript"; // fallback to 'javascript'
   const languageGrammar = languages[selectedLanguage];
+
+  const submitHandler = async () => {
+   
+
+    const problemId = params.get("id");
+    console.log(problemId);
+    const verifyResponse = await fetch(`/api/submit`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: problemId,
+        payload: {
+          "source_code": `${code}`,
+          "language_id": `${langRef.current?.value == "javascript" ? 63 : langRef.current?.value === "Java" ? 91 : langRef.current?.value === "C++" ? 76 : 0}`,
+        }
+      })
+
+    });
+    const verifyData = await verifyResponse.json();
+    console.log(verifyData);
+  };
 
   return (
     <div style={{
@@ -33,7 +63,7 @@ const Code = () => {
         highlight={(code) => {
           if (languages.js) {
             //@ts-ignore
-            return highlight(code, langRef.current?.value === "javascript" ? languages.js : languages[selectedLanguage], `${langRef.current?.value}`);
+            return highlight(code, langRef.current?.value === "javascript"||"Java"||"C++" ? languages.js : languages[selectedLanguage], `${langRef.current?.value}`);
           }
           return code; // Return the code without highlighting if languages.js is undefined
         }}
@@ -53,9 +83,7 @@ const Code = () => {
       />
       <div>
         <button
-          onClick={() => {
-            console.log(langRef.current?.value);
-          }}
+          onClick={submitHandler}
           style={{
             backgroundColor: "#4fbf31",
             color: "white",

@@ -53,42 +53,21 @@ export async function POST(req: NextRequest) {
                 "expected_output": `${output.toString()}`
             })
         }
-        // console.log(finalBatch);
+        console.log(finalBatch);
         const response = await fetch(`https://judge0-ce.p.rapidapi.com/submissions/batch`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "x-rapidapi-host": `${process.env.NEXT_PUBLIC_RapidApiUrl}`,
-                "x-rapidapi-key": `${process.env.NEXT_PUBLIC_RapidApiKey}`
-            },
-            body: JSON.stringify({
-                "submissions": finalBatch
-            })
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-rapidapi-host": `${process.env.NEXT_PUBLIC_RapidApiUrl}`,
+            "x-rapidapi-key": `${process.env.NEXT_PUBLIC_RapidApiKey}`
+          },
+          body: JSON.stringify({
+            "submissions": finalBatch
+          })
         });
-
-        const pre_tokens:any[] = await response.json();
-        const tokens = pre_tokens.map(tokenObj => tokenObj?.token)
-        const resultResponses =[]
-        for (const token of tokens) {
-            const res =  await fetch(`https://judge0-ce.p.rapidapi.com/submissions/${token}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-rapidapi-host": `${process.env.NEXT_PUBLIC_RapidApiUrl}`,
-                    "x-rapidapi-key": `${process.env.NEXT_PUBLIC_RapidApiKey}`
-                }
-                
-            });
-            // const data = await res.json();
-            resultResponses.push(await res.json());
-
-        }        
+        const submitResult = await response.json();
         
-        console.log(resultResponses);
-        return NextResponse.json(tokens);
-        
-        
-
-        
+        return NextResponse.json(submitResult);
     } catch (err) {
         console.log(err);
     }
