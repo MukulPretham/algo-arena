@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs"
 import { client } from "@repo/db/client"
 
 export async function POST(req: NextRequest) {

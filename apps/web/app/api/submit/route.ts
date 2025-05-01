@@ -66,18 +66,9 @@ export async function POST(req: NextRequest) {
             })
         });
 
-        const pre_tokens:any[] = await response.json();
+        const pre_tokens: any[] = await response.json();
         const tokens = pre_tokens.map(tokenObj => tokenObj?.token)
-        // const resultResponses = tokens.map((token)=>{
-        //     return fetch(`https://judge0-ce.p.rapidapi.com/submissions/${token}`, {
-        //         headers: {
-        //             "Content-Type": "application/json",
-        //             "x-rapidapi-host": `${process.env.NEXT_PUBLIC_RapidApiUrl}`,
-        //             "x-rapidapi-key": `${process.env.NEXT_PUBLIC_RapidApiKey}`
-        //         }
-        //     }).then(data => data.json());
-        // });
-        // const Results = await Promise.all(resultResponses);
+        
         return NextResponse.json(tokens);
         
     } catch (err) {
