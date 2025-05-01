@@ -25,12 +25,12 @@ export async function POST(req: NextRequest) {
 
         //Reading all inpust and outputs of test cases
         const inputsDir = fs.readdirSync(`../problems/${slug}/inputs`);
-        let inputsPromises = inputsDir.map(testCaseFile => fs.readFileSync(`../problems/${slug}/inputs/${testCaseFile}`));
-        const inputs = await Promise.all(inputsPromises);
+        let inputs = inputsDir.map(testCaseFile => fs.readFileSync(`../problems/${slug}/inputs/${testCaseFile}`));
+        
 
         const outputsDir = fs.readdirSync(`../problems/${slug}/outputs`);
-        let outputsPromises = outputsDir.map(testCaseFile => fs.readFileSync(`../problems/${slug}/outputs/${testCaseFile}`));
-        const outputs = await Promise.all(outputsPromises);
+        let outputs = outputsDir.map(testCaseFile => fs.readFileSync(`../problems/${slug}/outputs/${testCaseFile}`));
+        
 
         //Forming batches to send req to rapid api
         const batchSkeleton = {
@@ -68,30 +68,19 @@ export async function POST(req: NextRequest) {
 
         const pre_tokens:any[] = await response.json();
         const tokens = pre_tokens.map(tokenObj => tokenObj?.token)
-        const resultResponses =[]
-        for (const token of tokens) {
-            const res =  await fetch(`https://judge0-ce.p.rapidapi.com/submissions/${token}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-rapidapi-host": `${process.env.NEXT_PUBLIC_RapidApiUrl}`,
-                    "x-rapidapi-key": `${process.env.NEXT_PUBLIC_RapidApiKey}`
-                }
-                
-            });
-            // const data = await res.json();
-            resultResponses.push(await res.json());
-
-        }        
-        
-        console.log(resultResponses);
+        // const resultResponses = tokens.map((token)=>{
+        //     return fetch(`https://judge0-ce.p.rapidapi.com/submissions/${token}`, {
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //             "x-rapidapi-host": `${process.env.NEXT_PUBLIC_RapidApiUrl}`,
+        //             "x-rapidapi-key": `${process.env.NEXT_PUBLIC_RapidApiKey}`
+        //         }
+        //     }).then(data => data.json());
+        // });
+        // const Results = await Promise.all(resultResponses);
         return NextResponse.json(tokens);
-        
-        
-
         
     } catch (err) {
         console.log(err);
     }
-
-
 }
