@@ -76,9 +76,10 @@ export async function POST(req: NextRequest) {
             }
         });
         
-        return NextResponse.json({
-            STATUS: currSubmission?.status
-        })
+        // return NextResponse.json({
+        //     STATUS: currSubmission?.status
+        // })
+        return NextResponse.json(results);
     }catch(err){
         return NextResponse.json({status: 500,message: "Internal server error"})
     }

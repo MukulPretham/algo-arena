@@ -21,28 +21,31 @@ const Code = () => {
   const [code, setCode] = React.useState(
     `function add(a, b) {\n  return a + b;\n}`
   );
-  const [result,setResult] = useState<string | null>("");
-  const [tokens,setTokens] = useState<string[] | null>();
+  const [results, setResults] = useState<any[] | null>([]);
+  const [tokens, setTokens] = useState<string[] | null>();
+  const [submitting,setSubmitting] = useState<boolean>(false);
+  
 
-  const [submissionId,setSubmissionId] = useState<string | null>(null);
+  const [submissionId, setSubmissionId] = useState<string | null>(null);
 
   const params = useSearchParams();
   const session = useSession();
-  
+
 
   const langRef = useRef<HTMLSelectElement>(null);
   const selectedLanguage = langRef.current?.value || "javascript"; // fallback to 'javascript'
   const languageGrammar = languages[selectedLanguage];
 
 
-  useEffect(()=>{
-    if(!submissionId){
+  useEffect(() => {
+    if (!submissionId) {
       console.log("polling")
       return;
     }
-    const interval = setInterval(()=>{
-      (async()=>{
-        const response = await fetch(`/api/check`,{
+    const interval = setInterval(() => {
+      (async () => {
+        setSubmitting(true);
+        const response = await fetch(`/api/check`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -52,18 +55,23 @@ const Code = () => {
             tokens: tokens
           })
         });
-        const result = await response.json();
-        setResult(result?.STATUS);
-        if(result?.STATUS === "Accepted" || result?.STATUS === "Wrong Answer" ){
-          clearInterval(interval);
+        const results = await response.json();
+        setResults(results);
+        setSubmitting(false);
+        console.log(results);
+        for (const result of results) {
+          if (result.status.description !== "Processing") {
+            clearInterval(interval);
+          }
         }
       })();
-      
-    },1000);
-  },[submissionId,tokens])
+
+    }, 1000);
+  }, [submissionId, tokens])
 
   const submitHandler = async () => {
-    setResult("");
+    setSubmitting(true);
+    setResults([]);
     const problemId = params.get("id");
     const userId = session.data?.user?.name
     console.log(userId);
@@ -102,7 +110,7 @@ const Code = () => {
         highlight={(code) => {
           if (languages.js) {
             //@ts-ignore
-            return highlight(code, langRef.current?.value === "javascript"||"Java"||"C++" ? languages.js : languages[selectedLanguage], `${langRef.current?.value}`);
+            return highlight(code, langRef.current?.value === "javascript" || "Java" || "C++" ? languages.js : languages[selectedLanguage], `${langRef.current?.value}`);
           }
           return code; // Return the code without highlighting if languages.js is undefined
         }}
@@ -124,6 +132,7 @@ const Code = () => {
         <button
           onClick={submitHandler}
           style={{
+            margin: "5px",
             backgroundColor: "#4fbf31",
             color: "white",
             padding: "10px 10px",
@@ -134,11 +143,23 @@ const Code = () => {
             marginTop: "1px",
             right: "5px"
           }}>Submit</button>
-          <div>Result: {result} </div>
+          {submitting && <div>Submitting...</div> }
+        {/* <div>Result: {result} </div> */}
+        <div style={{display: "flex", gap: "13px"}}>
+        {results && results.map(result => 
+          <div style={result.status.description === "Accepted"? {backgroundColor: "green",display: "flex", flexDirection: "column", border: "1px solid black",margin:"12px",padding: "4px",borderRadius: "10px", justifyContent: "center", alignItems: "center"
+            , color: "white"}:{backgroundColor: "red",display: "flex", flexDirection: "column", border: "1px solid black",margin:"12px",padding: "4px",borderRadius: "10px", justifyContent: "center", alignItems: "center"
+              , color: "white"} }
+          >
+            <div>output: {result?.stdout ? result?.stdout:"null" }</div>
+            <div>status: {result?.status?.description}</div>
+          </div>
+        )}
+        </div>
+        
       </div>
     </div>
 
   );
 };
-
 export default Code;
