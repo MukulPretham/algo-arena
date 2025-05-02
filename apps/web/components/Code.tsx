@@ -1,5 +1,5 @@
 "use client"
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Editor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs';
 import 'prismjs/components/prism-clike';
@@ -12,6 +12,8 @@ import fs from "fs";
 import 'prismjs/themes/prism.css';
 import { useSearchParams } from 'next/navigation';
 import { verify } from '../utils/utils';
+import { getServerSession } from 'next-auth';
+import { useSession } from 'next-auth/react';
 
 
 
@@ -19,24 +21,60 @@ const Code = () => {
   const [code, setCode] = React.useState(
     `function add(a, b) {\n  return a + b;\n}`
   );
+  const [result,setResult] = useState<string | null>("");
+  const [tokens,setTokens] = useState<string[] | null>();
+
+  const [submissionId,setSubmissionId] = useState<string | null>(null);
+
   const params = useSearchParams();
+  const session = useSession();
+  
 
   const langRef = useRef<HTMLSelectElement>(null);
   const selectedLanguage = langRef.current?.value || "javascript"; // fallback to 'javascript'
   const languageGrammar = languages[selectedLanguage];
 
-  const submitHandler = async () => {
-   
 
+  useEffect(()=>{
+    if(!submissionId){
+      console.log("polling")
+      return;
+    }
+    const interval = setInterval(()=>{
+      (async()=>{
+        const response = await fetch(`/api/check`,{
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            submissionId: submissionId,
+            tokens: tokens
+          })
+        });
+        const result = await response.json();
+        setResult(result?.STATUS);
+        if(result?.STATUS === "Accepted" || result?.STATUS === "Wrong Answer" ){
+          clearInterval(interval);
+        }
+      })();
+      
+    },1000);
+  },[submissionId,tokens])
+
+  const submitHandler = async () => {
+    setResult("");
     const problemId = params.get("id");
-    console.log(problemId);
-    const verifyResponse = await fetch(`/api/submit`, {
+    const userId = session.data?.user?.name
+    console.log(userId);
+    const submitResponse = await fetch(`/api/submit`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        id: problemId,
+        problemId: problemId,
+        username: userId,
         payload: {
           "source_code": `${code}`,
           "language_id": `${langRef.current?.value == "javascript" ? 63 : langRef.current?.value === "Java" ? 91 : langRef.current?.value === "C++" ? 76 : 0}`,
@@ -44,8 +82,10 @@ const Code = () => {
       })
 
     });
-    const verifyData = await verifyResponse.json();
-    console.log(verifyData);
+    const message = await submitResponse.json();
+    setSubmissionId(message?.id);
+    setTokens(message?.tokens);
+    console.log(message);
   };
 
   return (
@@ -53,7 +93,6 @@ const Code = () => {
       width: "50%"
     }}>
       <select ref={langRef} name="" id="">
-        <option value="javascript">Javascript</option>
         <option value="Java">Java</option>
         <option value="C++">C++</option>
       </select>
@@ -95,6 +134,7 @@ const Code = () => {
             marginTop: "1px",
             right: "5px"
           }}>Submit</button>
+          <div>Result: {result} </div>
       </div>
     </div>
 

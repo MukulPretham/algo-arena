@@ -19,6 +19,7 @@ model User {
   username String @unique
   password String 
   email String @unique
+  submissions Submissions[]
 }
 
 model Problem {
@@ -28,6 +29,7 @@ model Problem {
   type String
   TestCases TestCases[]
   topic ProblemToTopic[]
+  submissions Submissions[]
 }
 
 model TestCases {
@@ -53,4 +55,13 @@ model ProblemToTopic{
   // topic Topic[]
   problemName Problem @relation(fields: [problemId],references: [id])
   topic Topic @relation(fields: [topicId],references: [id])
+}
+
+model Submissions{
+  id String @default(cuid()) @id
+  userId String
+  problemId String
+  status String
+  users User @relation(fields: [userId],references: [id])
+  problems Problem @relation(fields: [problemId],references: [id])
 }
