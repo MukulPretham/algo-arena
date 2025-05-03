@@ -17,3 +17,12 @@ export type TestCase = {
     testCaseOutput: string,
     explanation: string
 }
+
+export type DateType = {
+    year: number,
+    month: number,
+    day: number,
+    hour: number,
+    minute: number,
+    seconds: number
+}

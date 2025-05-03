@@ -147,7 +147,7 @@ const Code = () => {
         {/* <div>Result: {result} </div> */}
         <div style={{display: "flex", gap: "13px"}}>
         {results && results.map(result => 
-          <div style={result.status.description === "Accepted"? {backgroundColor: "green",display: "flex", flexDirection: "column", border: "1px solid black",margin:"12px",padding: "4px",borderRadius: "10px", justifyContent: "center", alignItems: "center"
+          <div key={0 + Math.random()*10000000} style={result.status.description === "Accepted"? {backgroundColor: "green",display: "flex", flexDirection: "column", border: "1px solid black",margin:"12px",padding: "4px",borderRadius: "10px", justifyContent: "center", alignItems: "center"
             , color: "white"}:{backgroundColor: "red",display: "flex", flexDirection: "column", border: "1px solid black",margin:"12px",padding: "4px",borderRadius: "10px", justifyContent: "center", alignItems: "center"
               , color: "white"} }
           >
@@ -156,7 +156,6 @@ const Code = () => {
           </div>
         )}
         </div>
-        
       </div>
     </div>
 

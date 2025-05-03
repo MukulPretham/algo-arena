@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  
 }
 
 datasource db {
@@ -20,6 +19,7 @@ model User {
   password String 
   email String @unique
   submissions Submissions[]
+  contests ContestParticipantLogs[]
 }
 
 model Problem {
@@ -27,6 +27,7 @@ model Problem {
   title String
   statement String @unique
   type String
+  contest ContestQuestionLogs[]
   TestCases TestCases[]
   topic ProblemToTopic[]
   submissions Submissions[]
@@ -64,4 +65,31 @@ model Submissions{
   status String
   users User @relation(fields: [userId],references: [id])
   problems Problem @relation(fields: [problemId],references: [id])
+}
+
+//--------------------------------------------------------------------------------------//
+
+model Contest{
+  id String @default(cuid()) @id
+  namen String @unique
+  starts DateTime
+  ends DateTime
+  problems ContestQuestionLogs[]
+  participant ContestParticipantLogs[]
+}
+
+model ContestQuestionLogs {
+  id Int @default(autoincrement()) @id
+  contestId String
+  problemId String
+  problem Problem @relation(fields: [problemId],references: [id])
+  contest Contest @relation(fields: [contestId],references: [id])
+}
+
+model ContestParticipantLogs{
+  id Int @default(autoincrement()) @id
+  contestId String
+  userId String
+  contest Contest @relation(fields: [contestId], references: [id])
+  participant User @relation(fields: [userId], references: [id])
 }
