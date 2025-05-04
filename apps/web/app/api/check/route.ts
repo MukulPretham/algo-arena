@@ -43,10 +43,8 @@ export async function POST(req: NextRequest) {
                         id: id
                     }
                 });
+                return NextResponse.json(results);
                 
-                return NextResponse.json({
-                    STATUS: currSubmission?.status
-                })
             };
             
             if (result.status.description === "Accepted") {

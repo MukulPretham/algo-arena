@@ -21,7 +21,7 @@ const Code = () => {
   const [code, setCode] = React.useState(
     `function add(a, b) {\n  return a + b;\n}`
   );
-  const [results, setResults] = useState<any[] | null>([]);
+  const [results, setResults] = useState<any[]>([]);
   const [tokens, setTokens] = useState<string[] | null>();
   const [submitting,setSubmitting] = useState<boolean>(false);
   
@@ -56,6 +56,7 @@ const Code = () => {
           })
         });
         const results = await response.json();
+        console.log(results);
         setResults(results);
         setSubmitting(false);
         console.log(results);

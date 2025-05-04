@@ -27,6 +27,7 @@ const NavBar = () => {
             <span onClick={()=>{router.push("/contests")}} style={pathname == "/contests" ? styles : { cursor: "pointer" }  }>Contests</span>
             <span onClick={()=>{router.push("/problem-sets")}} style={pathname == "/problem-sets" || pathname.split("/")[1] === "problem-sets"  ? styles : { cursor: "pointer" }  }>Problem sets</span>
             <span onClick={()=>{router.push("/leaderboard")}} style={pathname == "/leaderboard" ? styles : { cursor: "pointer" }  } >Leadrboard</span>
+            <span onClick={()=>{router.push("/profile")}} style={pathname == "/profile" ? styles : { cursor: "pointer" }  } >Profile</span>
             <button
                 onClick={()=>{
                     signOut({ callbackUrl: "/" })
