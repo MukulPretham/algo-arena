@@ -63,6 +63,7 @@ model Submissions{
   userId String
   problemId String
   status String
+  type String @default("practice")
   users User @relation(fields: [userId],references: [id])
   problems Problem @relation(fields: [problemId],references: [id])
 }
@@ -90,7 +91,7 @@ model ContestParticipantLogs{
   id Int @default(autoincrement()) @id
   contestId String
   userId String
-  score Int
+  score Int @default(0)
   contest Contest @relation(fields: [contestId], references: [id])
   participant User @relation(fields: [userId], references: [id])
 }

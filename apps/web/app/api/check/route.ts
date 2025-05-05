@@ -6,6 +6,7 @@ export async function POST(req: NextRequest) {
     
     const body = await req.json();
     const submissionId = body?.submissionId;
+    const contestId: string = body?.contestId;
     const tokens: string[] = body?.tokens;
    
     const id : string = submissionId ? decodeURIComponent(submissionId): " ";
@@ -63,7 +64,7 @@ export async function POST(req: NextRequest) {
                 data: {
                     status: "Accepted"
                 }
-            });    
+            });
         }else{
             await client.submissions.update({
                 where: {
@@ -74,8 +75,8 @@ export async function POST(req: NextRequest) {
                 }
             });    
         }
-        
-        console.log(submissionId);
+
+
 
         // for (const result of results) {
         //     if (result.status.description === "Wrong Answer") {
