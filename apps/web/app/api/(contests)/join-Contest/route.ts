@@ -37,7 +37,8 @@ export async function POST(req:NextRequest) {
         await client.contestParticipantLogs.create({
             data: {
                 contestId: currContest?.id,
-                userId: currUser?.id
+                userId: currUser?.id,
+                score: 0
             }
         });
 
