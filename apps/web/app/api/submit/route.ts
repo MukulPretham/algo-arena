@@ -90,6 +90,7 @@ export async function POST(req: NextRequest) {
                 status: "Pending"
             }
         });
+        console.log(submission.id);
 
         const pre_tokens: any[] = await response.json();
         

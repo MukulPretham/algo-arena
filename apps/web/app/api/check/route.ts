@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { client } from "@repo/db/client"
+import { console } from "inspector";
 
 export async function POST(req: NextRequest) {
     
@@ -26,7 +27,7 @@ export async function POST(req: NextRequest) {
         });
 
         const results = await Promise.all(resultsPromises);
-        console.log(results);
+        
 
         const finalResults = results.map((entry)=>{
             return entry.status.description
@@ -52,7 +53,7 @@ export async function POST(req: NextRequest) {
                     status: "Processing"
                 }
             });
-            
+            return NextResponse.json(results);
         }
         if(resultLemgth === resultCounter){
             await client.submissions.update({
@@ -62,9 +63,19 @@ export async function POST(req: NextRequest) {
                 data: {
                     status: "Accepted"
                 }
-            });
-            
+            });    
+        }else{
+            await client.submissions.update({
+                where: {
+                    id: submissionId
+                },
+                data: {
+                    status: "Wromg Answer"
+                }
+            });    
         }
+        
+        console.log(submissionId);
 
         // for (const result of results) {
         //     if (result.status.description === "Wrong Answer") {
@@ -115,11 +126,11 @@ export async function POST(req: NextRequest) {
         // return NextResponse.json({
         //     STATUS: currSubmission?.status
         // })
+        
         return NextResponse.json(results);
     }catch(err){
         return NextResponse.json({status: 500,message: "Internal server error"})
     }
-    
 }
 
 
