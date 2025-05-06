@@ -88,10 +88,11 @@ model ContestQuestionLogs {
 }
 
 model ContestParticipantLogs{
-  id Int @default(autoincrement()) @id
+  
   contestId String
   userId String
   score Int @default(0)
   contest Contest @relation(fields: [contestId], references: [id])
   participant User @relation(fields: [userId], references: [id])
+  @@id([contestId, userId])
 }
