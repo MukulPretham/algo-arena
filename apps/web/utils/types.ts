@@ -26,3 +26,10 @@ export type DateType = {
     minute: number,
     seconds: number
 }
+
+export type Contest = {
+    id: string,
+    namen: string,
+    starts: string
+    ends: string
+}
