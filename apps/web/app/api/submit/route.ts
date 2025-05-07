@@ -12,6 +12,7 @@ export async function POST(req: NextRequest) {
 
     const problemId = body.problemId;
     const username = body.username;
+    const contestId = body.contest;
     console.log(body);
     if (!problemId || !username) {
         return NextResponse.json({ error: "no username and password given" })
@@ -83,14 +84,26 @@ export async function POST(req: NextRequest) {
         });
 
         //Creating an submissions entry in DB.
-        const submission = await client.submissions.create({
-            data: {
-                userId: currUser.id,
-                problemId: problemId,
-                status: "Pending"
-            }
-        });
-        console.log(submission.id);
+        let submission;
+        if(contestId){
+            submission = await client.submissions.create({
+                data: {
+                    userId: currUser.id,
+                    problemId: problemId,
+                    status: "Pending",
+                    type: "contest"
+                }
+            });
+        }else{
+            submission = await client.submissions.create({
+                data: {
+                    userId: currUser.id,
+                    problemId: problemId,
+                    status: "Pending",
+                    type: "contest"
+                }
+            });
+        }
 
         const pre_tokens: any[] = await response.json();
         

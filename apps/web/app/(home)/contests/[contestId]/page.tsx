@@ -4,10 +4,10 @@ import React, { Suspense, useEffect, useState } from 'react'
 import { Contest, Problem } from '../../../../utils/types';
 import ProblemCard from '../../../../components/ProblemCard';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 
 const page = () => {
     const params = useParams();
-    git
     const [joined, setJoined] = useState<boolean>(false);
     const [currContest, setCurrContest] = useState<Contest>();
     const [contestProblems, setContestProblems] = useState<Problem[]>();
@@ -77,14 +77,11 @@ const page = () => {
                 <p>Start Date: {currContest?.starts && new Date(currContest?.starts).toUTCString()}</p>
                 <p>End Date: {currContest?.ends && new Date(currContest?.ends).toUTCString()}</p>
                 {joined && currContest?.starts && new Date() >= new Date(currContest?.starts) ? contestProblems?.map((problem) =>
-                    <div key={problem.id.toString()}><ProblemCard title={problem.title} type={problem.type} /></div>
+                    <Link key={problem.id.toString()} href={`./solve?id=${problem.id}&contestId=${params.contestId}`}><div key={problem.id.toString()}><ProblemCard title={problem.title} type={problem.type} /></div></Link>
                 ) : <div> <span>Contest has not started or you have not joined</span></div>}
                 {!joined && <button onClick={joinHandler} style={{ marginLeft: "3px", padding: "5px", border: "2px solid black" }}>Join</button>}
             </Suspense>
         </div>
-
-
-
     )
 }
 

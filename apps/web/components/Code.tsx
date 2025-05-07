@@ -17,7 +17,9 @@ import { useSession } from 'next-auth/react';
 
 
 
-const Code = () => {
+const Code = ({contest}:{
+  contest: boolean
+}) => {
   const [code, setCode] = React.useState(
     `function add(a, b) {\n  return a + b;\n}`
   );
@@ -50,7 +52,12 @@ const Code = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
+          body: JSON.stringify(contest? {
+            submissionId: submissionId,
+            contestId: params.get("contestId"),
+            problemId: params.get("id"),
+            tokens: tokens
+          }:{
             submissionId: submissionId,
             tokens: tokens
           })
@@ -81,9 +88,19 @@ const Code = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
+      body: JSON.stringify(!contest?{
         problemId: problemId,
         username: userId,
+        contest: false,
+        payload: {
+          "source_code": `${code}`,
+          "language_id": `${langRef.current?.value == "javascript" ? 63 : langRef.current?.value === "Java" ? 91 : langRef.current?.value === "C++" ? 76 : 0}`,
+        }
+      }:{
+        problemId: problemId,
+        username: userId,
+        contest: true,
+        contestId: params.get("contestId"),
         payload: {
           "source_code": `${code}`,
           "language_id": `${langRef.current?.value == "javascript" ? 63 : langRef.current?.value === "Java" ? 91 : langRef.current?.value === "C++" ? 76 : 0}`,

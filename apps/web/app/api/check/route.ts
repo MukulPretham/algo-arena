@@ -5,12 +5,14 @@ import { console } from "inspector";
 export async function POST(req: NextRequest) {
 
     const body = await req.json();
+    console.log(body);
     const submissionId = body?.submissionId;
     const contestId: string = body?.contestId;
     const username: string = body?.username;
+    const problemId: string = body?.problemId;
     const tokens: string[] = body?.tokens;
 
-    if(!submissionId || !tokens){
+    if (!submissionId || !tokens) {
         return NextResponse.json({
             status: 404,
             message: "Bad Request"
@@ -90,18 +92,30 @@ export async function POST(req: NextRequest) {
                 if (!currParticipitant) {
                     return;
                 }
-                let updatedScore = currParticipitant?.score + 10;
-                await client.contestParticipantLogs.update({
+                let alreadyAccepted: boolean = false
+                const alreadySubmited = await client.submissions.findFirst({
                     where: {
-                        contestId_userId: {
-                            contestId: contestId,
-                            userId: currUser?.id!,
-                        },
-                    },
-                    data: {
-                        score: updatedScore
-                    },
+                        problemId: problemId,
+                        userId: currUser?.id
+                    }
                 });
+                if (alreadySubmited?.status === "Accepted") {
+                    alreadyAccepted = true
+                }
+                if (!alreadyAccepted) {
+                    let updatedScore = currParticipitant?.score + 10;
+                    await client.contestParticipantLogs.update({
+                        where: {
+                            contestId_userId: {
+                                contestId: contestId,
+                                userId: currUser?.id!,
+                            },
+                        },
+                        data: {
+                            score: updatedScore
+                        },
+                    });
+                }
             }
         } else {
             await client.submissions.update({
