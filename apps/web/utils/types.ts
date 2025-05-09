@@ -18,6 +18,16 @@ export type TestCase = {
     explanation: string
 }
 
+export type Submsiions = {
+    id: string,
+    statement: string
+    status: string,
+    title: string,
+    submissionType: string
+    type: string,
+    contest: string
+}
+
 export type DateType = {
     year: number,
     month: number,
@@ -32,4 +42,14 @@ export type Contest = {
     namen: string,
     starts: string
     ends: string
+}
+
+export type Profile = {
+    user: {
+        id: string,
+        username: string,
+        password: string,
+        email: string
+    },
+    submissions: Submsiions[]
 }
