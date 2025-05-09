@@ -5,7 +5,6 @@ import { console } from "inspector";
 export async function POST(req: NextRequest) {
 
     const body = await req.json();
-    console.log(body);
     const submissionId = body?.submissionId;
     const contestId: string = body?.contestId;
     const username: string = body?.username;
@@ -73,15 +72,6 @@ export async function POST(req: NextRequest) {
             return NextResponse.json(results);
         }
         if (resultLemgth === resultCounter) {
-            await client.submissions.update({
-                where: {
-                    id: submissionId
-                },
-                data: {
-                    status: "Accepted"
-                }
-            });
-            //If it is a contest submission, we should update the score.
             if (currSubmission?.type !== "practice" && contestId) {
                 const currParticipitant = await client.contestParticipantLogs.findFirst({
                     where: {
@@ -92,16 +82,23 @@ export async function POST(req: NextRequest) {
                 if (!currParticipitant) {
                     return;
                 }
-                let alreadyAccepted: boolean = false
-                const alreadySubmited = await client.submissions.findFirst({
+                let alreadyAccepted: boolean = false;
+                const alreadySubmited = await client.submissions.findMany({
                     where: {
+                        contestId: contestId,
                         problemId: problemId,
                         userId: currUser?.id
                     }
                 });
-                if (alreadySubmited?.status === "Accepted") {
-                    alreadyAccepted = true
+                for (const submission of alreadySubmited) {
+                    if (submission?.status === "Accepted" && submission.type == "contest") {
+                        alreadyAccepted = true;
+                    }
                 }
+                console.log(alreadySubmited + " ------------------------------------");
+                
+    
+    
                 if (!alreadyAccepted) {
                     let updatedScore = currParticipitant?.score + 10;
                     await client.contestParticipantLogs.update({
@@ -117,6 +114,17 @@ export async function POST(req: NextRequest) {
                     });
                 }
             }
+            await client.submissions.update({
+                where: {
+                    id: submissionId
+                },
+                data: {
+                    status: "Accepted"
+                }
+            });
+            
+            //If it is a contest submission, we should update the score.
+
         } else {
             await client.submissions.update({
                 where: {
@@ -128,10 +136,7 @@ export async function POST(req: NextRequest) {
             });
         }
 
-
-
-
-
+    
         // for (const result of results) {
         //     if (result.status.description === "Wrong Answer") {
         //         await client.submissions.update({

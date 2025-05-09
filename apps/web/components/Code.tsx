@@ -26,6 +26,7 @@ const Code = ({contest}:{
   const [results, setResults] = useState<any[]>([]);
   const [tokens, setTokens] = useState<string[] | null>();
   const [submitting,setSubmitting] = useState<boolean>(false);
+  const [pending ,setPending] = useState<boolean>();
   
 
   const [submissionId, setSubmissionId] = useState<string | null>(null);
@@ -41,12 +42,13 @@ const Code = ({contest}:{
 
   useEffect(() => {
     if (!submissionId) {
-      console.log("polling")
+      console.log("polling");
+      console.log(tokens);
       return;
     }
     const interval = setInterval(() => {
       (async () => {
-        setSubmitting(true);
+        setPending(true);
         const response = await fetch(`/api/check`, {
           method: "POST",
           headers: {
@@ -65,7 +67,7 @@ const Code = ({contest}:{
         const results = await response.json();
         console.log(results);
         setResults(results);
-        setSubmitting(false);
+        setPending(false);
         console.log(results);
         for (const result of results) {
           if (result.status.description !== "Processing") {
@@ -109,9 +111,11 @@ const Code = ({contest}:{
 
     });
     const message = await submitResponse.json();
+    console.log(message + "------------------------------->");
     setSubmissionId(message?.id);
     setTokens(message?.tokens);
-    console.log(message);
+    
+    setSubmitting(false);
   };
 
   return (
@@ -161,7 +165,7 @@ const Code = ({contest}:{
             marginTop: "1px",
             right: "5px"
           }}>Submit</button>
-          {submitting && <div>Submitting...</div> }
+          {submitting ? <div>Submitting...</div>: pending ? <div>Pending...</div>: "" }
         {/* <div>Result: {result} </div> */}
         <div style={{display: "flex", gap: "13px"}}>
         {results && results.map(result => 

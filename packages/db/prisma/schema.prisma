@@ -64,6 +64,7 @@ model Submissions{
   problemId String
   status String
   type String @default("practice")
+  contestId String @default("none")
   users User @relation(fields: [userId],references: [id])
   problems Problem @relation(fields: [problemId],references: [id])
 }

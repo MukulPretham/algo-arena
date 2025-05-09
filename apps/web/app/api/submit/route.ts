@@ -12,8 +12,8 @@ export async function POST(req: NextRequest) {
 
     const problemId = body.problemId;
     const username = body.username;
-    const contestId = body.contest;
-    console.log(body);
+    const contestId = body?.contestId;
+    
     if (!problemId || !username) {
         return NextResponse.json({ error: "no username and password given" })
     }
@@ -91,7 +91,8 @@ export async function POST(req: NextRequest) {
                     userId: currUser.id,
                     problemId: problemId,
                     status: "Pending",
-                    type: "contest"
+                    type: "contest",
+                    contestId: contestId
                 }
             });
         }else{
@@ -99,15 +100,16 @@ export async function POST(req: NextRequest) {
                 data: {
                     userId: currUser.id,
                     problemId: problemId,
-                    status: "Pending",
-                    type: "contest"
+                    status: "Pending"
                 }
             });
         }
 
         const pre_tokens: any[] = await response.json();
         
-        const tokens = pre_tokens.map(tokenObj => tokenObj?.token)
+        const tokens = pre_tokens.map(tokenObj => tokenObj?.token);
+
+        console.log(tokens);
         
         return NextResponse.json({
             status: "submitted",
