@@ -9,6 +9,7 @@ import Link from 'next/link';
 const page = () => {
     const params = useParams();
     const [joined, setJoined] = useState<boolean>(false);
+    const [score,setScore] = useState<Number>(0);
     const [currContest, setCurrContest] = useState<Contest>();
     const [contestProblems, setContestProblems] = useState<Problem[]>();
     const sessions = useSession();
@@ -40,6 +41,10 @@ const page = () => {
             const data = await response.json();
             if (data.message == "true") {
                 setJoined(true);
+                if(data.score){
+                    console.log(data);
+                    setScore(data?.score)
+                }
             } else {
                 setJoined(false);
             }
@@ -79,6 +84,7 @@ const page = () => {
                 {joined && currContest?.starts && new Date() >= new Date(currContest?.starts) ? contestProblems?.map((problem) =>
                     <Link key={problem.id.toString()} href={`./solve?id=${problem.id}&contestId=${params.contestId}`}><div key={problem.id.toString()}><ProblemCard title={problem.title} type={problem.type} /></div></Link>
                 ) : <div> <span>Contest has not started or you have not joined</span></div>}
+                {joined && <b>Score: {score.toString()}</b>}
                 {!joined && <button onClick={joinHandler} style={{ marginLeft: "3px", padding: "5px", border: "2px solid black" }}>Join</button>}
             </Suspense>
         </div>

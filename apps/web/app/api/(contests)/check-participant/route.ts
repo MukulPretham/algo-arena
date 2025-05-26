@@ -19,7 +19,8 @@ export async function POST(req:NextRequest) {
 
         if(participated?.userId){
             return NextResponse.json({
-                message: "true"
+                message: "true",
+                score: participated.score
             });
         }
         return NextResponse.json({
