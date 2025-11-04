@@ -1,403 +1,155 @@
-# 🏟️ Algo Arena
+# Algo-Arena
 
-> A comprehensive competitive programming platform where developers can solve algorithmic challenges, participate in contests, and track their progress. Built with Turborepo, Next.js, TypeScript, and Prisma.
+Algo-Arena is a comprehensive platform designed for competitive programming and algorithmic problem-solving. It offers features for participating in coding contests, solving problems categorized by topics, and managing user submissions. The platform includes an administrative interface for adding and managing problems, test cases, and contests.
 
-## 🚀 Quick Start
+## Table of Contents
 
-```bash
-# Clone the repository
-git clone https://github.com/MukulPretham/algo-arena.git
+-   [Features](#features)
+-   [Architecture](#architecture)
+-   [Getting Started](#getting-started)
+    -   [Prerequisites](#prerequisites)
+    -   [Installation](#installation)
+-   [Project Structure](#project-structure)
+-   [API Endpoints](#api-endpoints)
+-   [Admin Functionality](#admin-functionality)
+-   [Contributing](#contributing)
+-   [License](#license)
 
-# Install dependencies
-npm install
+## Features
 
-# Start development servers
-npm run dev
-```
+*   **Contests:**
+    *   Browse and join available coding contests.
+    *   View contest details, including start and end dates.
+    *   Solve problems within active contests and track your score.
+*   **Problem Sets:**
+    *   Explore a wide range of algorithmic problems.
+    *   Filter problems by various topics.
+    *   Solve individual problems outside of contests.
+*   **Problem Solving Interface:**
+    *   Detailed problem descriptions and examples.
+    *   Integrated code editor for submitting solutions.
+*   **User Authentication:**
+    *   Secure user signup and login.
+    *   User profile management.
+*   **Admin Panel:**
+    *   Add new problems with titles, statements, types, and topics.
+    *   Manage and add multiple test cases (input, output, explanation) for problems.
+    *   (Inferred) Create and manage coding contests.
+    *   (Inferred) Add problems to specific contests.
 
-## 🎯 Platform Features
+## Architecture
 
-### For Coders
-- **🔐 Account Management** - Create personalized accounts with secure authentication
-- **💻 Multi-Language Support** - Solve problems in your preferred programming language
-- **📊 Progress Tracking** - Monitor your submission history and performance metrics
-- **🏆 Contest Participation** - Compete in timed programming contests
-- **📈 Scoring System** - Track your ranking and improvement over time
-- **📚 Problem Categories** - Browse problems by topics and difficulty levels
+This project is structured as a monorepo using `pnpm` and `Turborepo` for efficient dependency management and build processes. It consists of two main parts:
 
-### For Platform
-- **🗃️ Robust Database Design** - PostgreSQL with Prisma ORM for data integrity
-- **⚡ Real-time Evaluation** - Instant feedback on code submissions
-- **🎪 Contest Management** - Comprehensive contest creation and participation system
-- **📋 Test Case Management** - Detailed test cases with explanations for each problem
+*   **`apps/web`**: The frontend application built with Next.js, providing the user interface and interacting with the backend API.
+*   **`packages/db`**: Contains the Prisma ORM setup for database interactions, defining the schema and providing the database client.
 
-## 📋 What's Inside?
+## Getting Started
 
-Algo Arena is a monorepo built with [Turborepo](https://turborepo.com) that includes the following packages and applications:
-
-### Applications
-
-- **`web`** - Main Next.js application with Tailwind CSS (Primary user interface)
-- **`docs`** - Documentation site built with Next.js and Tailwind CSS
-
-### Packages
-
-- **`ui`** - Shared React component library with Tailwind CSS used by both `web` and `docs`
-- **`@repo/eslint-config`** - Shared ESLint configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- **`@repo/typescript-config`** - Shared TypeScript configuration files used throughout the monorepo
-
-## 🛠️ Tech Stack
-
-- **Framework**: [Next.js 15](https://nextjs.org/) with App Router
-- **Language**: [TypeScript](https://www.typescriptlang.org/) (100% TypeScript codebase)
-- **Database**: [PostgreSQL](https://postgresql.org/) with [Prisma ORM](https://prisma.io/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-- **Build System**: [Turborepo](https://turborepo.com) for optimized builds
-- **Code Quality**: ESLint + Prettier
-- **Package Manager**: npm
-
-## 🏗️ Project Structure
-
-```
-algo-arena/
-├── apps/
-│   ├── docs/                 # Documentation site
-│   └── web/                  # Main application
-├── packages/
-│   ├── ui/                   # Shared component library
-│   ├── eslint-config/        # ESLint configurations
-│   └── typescript-config/    # TypeScript configurations
-├── prisma/
-│   └── schema.prisma         # Database schema
-├── package.json
-├── turbo.json               # Turborepo configuration
-└── README.md
-```
-
-## 💡 Key Features
-
-### Competitive Programming Platform
-- **User Registration & Authentication** - Secure account creation with email verification
-- **Multi-Language Code Execution** - Support for popular programming languages
-- **Real-time Contest System** - Timed competitions with live leaderboards
-- **Comprehensive Problem Bank** - Categorized by topics and difficulty levels
-- **Advanced Scoring System** - Track performance metrics and rankings
-- **Submission History** - Complete record of all attempts and solutions
-
-### Database Architecture
-The platform uses a robust PostgreSQL database with Prisma ORM, featuring:
-
-#### Core Models
-- **Users** - Account management with unique usernames and emails
-- **Problems** - Algorithm challenges with statements and categorization
-- **Test Cases** - Input/output pairs with detailed explanations
-- **Topics** - Problem categorization system
-- **Submissions** - User solution attempts with status tracking
-
-#### Contest System
-- **Contests** - Timed competitive events with start/end times
-- **Contest Problems** - Many-to-many relationship between contests and problems
-- **Participant Logs** - User participation tracking with scores
-
-### Monorepo Architecture
-- **Turborepo** for lightning-fast builds with intelligent caching
-- **Shared UI Components** across multiple applications
-- **Consistent tooling** with shared ESLint and TypeScript configs
-- **Optimized package compilation** using Next.js Compiler
-
-## 🗄️ Database Schema
-
-The platform uses PostgreSQL with Prisma ORM for robust data management:
-
-### User Management
-```prisma
-model User {
-  id          String    @id @default(uuid())
-  username    String    @unique
-  password    String 
-  email       String    @unique
-  submissions Submissions[]
-  contests    ContestParticipantLogs[]
-}
-```
-
-### Problem System
-```prisma
-model Problem {
-  id          String    @id @default(uuid())
-  title       String
-  statement   String    @unique
-  type        String
-  testCases   TestCases[]
-  topics      ProblemToTopic[]
-  submissions Submissions[]
-  contests    ContestQuestionLogs[]
-}
-
-model TestCases {
-  id              String  @id @default(uuid())
-  problemId       String
-  testCaseInput   String
-  testCaseOutput  String
-  explanation     String 
-  problem         Problem @relation(fields: [problemId], references: [id])
-}
-```
-
-### Contest Framework
-```prisma
-model Contest {
-  id           String    @id @default(cuid())
-  name         String    @unique
-  starts       DateTime
-  ends         DateTime
-  problems     ContestQuestionLogs[]
-  participants ContestParticipantLogs[]
-}
-
-model ContestParticipantLogs {
-  contestId String
-  userId    String
-  score     Int     @default(0)
-  contest   Contest @relation(fields: [contestId], references: [id])
-  user      User    @relation(fields: [userId], references: [id])
-  
-  @@id([contestId, userId])
-}
-```
-
-### Submission Tracking
-```prisma
-model Submissions {
-  id        String  @id @default(cuid())
-  userId    String
-  problemId String
-  status    String
-  type      String  @default("practice")
-  contestId String  @default("none")
-  user      User    @relation(fields: [userId], references: [id])
-  problem   Problem @relation(fields: [problemId], references: [id])
-}
-```
-- **Hot Module Replacement** across all packages
-- **TypeScript** for type safety and better developer experience
-- **Tailwind CSS** for rapid UI development
-- **Component isolation** with clear package boundaries
-
-### UI Component System
-- **Scoped CSS classes** using `ui-` prefix to prevent conflicts
-- **Compiled styles** output to `dist` directory
-- **Direct consumption** of `.tsx` files using `transpilePackages`
-- **Consistent design system** across applications
-
-## 🚦 Available Scripts
-
-### Root Level Commands
-
-```bash
-# Start all development servers
-npm run dev
-
-# Build all applications and packages
-npm run build
-
-# Run tests across all packages
-npm run test
-
-# Lint all packages
-npm run lint
-
-# Format code with Prettier
-npm run format
-
-# Database operations
-npx prisma studio          # Open Prisma Studio
-npx prisma generate         # Generate Prisma client
-npx prisma db push          # Push schema to database
-npx prisma db seed          # Seed database with sample data
-```
-
-### Application-Specific Commands
-
-```bash
-# Run specific application
-npm run dev --workspace=web
-npm run dev --workspace=docs
-
-# Build specific application
-npm run build --workspace=web
-npm run build --workspace=docs
-```
-
-## 🎨 Styling Architecture
-
-### Tailwind Configuration
-- **Shared config** in `packages/tailwind-config/tailwind.config.ts`
-- **UI prefix** for component library classes (`ui-`)
-- **Content paths** configured for optimal CSS compilation
-
-### Component Library Strategy
-The project uses a **compiled UI approach** where:
-1. UI components are built into the `dist` directory
-2. Applications consume compiled styles
-3. Component `.tsx` files are used directly via `transpilePackages`
-
-### Alternative Setup
-For direct source consumption (without building), update your `tailwind.config.ts`:
-
-```typescript
-content: [
-  // app content
-  `src/**/*.{js,ts,jsx,tsx}`,
-  // include packages if not transpiling
-  "../../packages/ui/*.{js,ts,jsx,tsx}",
-],
-```
-
-## 🔧 Development Setup
+Follow these instructions to set up and run the project locally.
 
 ### Prerequisites
-- Node.js 18.x or higher
-- npm 8.x or higher
-- PostgreSQL 14.x or higher
+
+*   Node.js (v18 or higher)
+*   pnpm
+*   A PostgreSQL database (or your preferred database supported by Prisma)
 
 ### Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/MukulPretham/algo-arena.git
-   cd algo-arena
-   ```
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/MukulPretham/algo-arena.git
+    cd algo-arena
+    ```
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+2.  **Install dependencies:**
+    ```bash
+    pnpm install
+    ```
 
-3. **Set up environment variables**
-   ```bash
-   cp .env.example .env.local
-   # Edit .env.local with your database credentials
-   ```
+3.  **Configure Environment Variables:**
+    Create a `.env` file in `apps/web` based on `.env.example` (if available, otherwise create one with necessary environment variables like database URL and NextAuth.js secrets).
 
-4. **Set up the database**
-   ```bash
-   # Generate Prisma client
-   npx prisma generate
-   
-   # Run database migrations
-   npx prisma db push
-   
-   # (Optional) Seed the database
-   npx prisma db seed
-   ```
+    Example `apps/web/.env`:
+    ```
+    DATABASE_URL="postgresql://user:password@host:port/database"
+    NEXTAUTH_SECRET="YOUR_NEXTAUTH_SECRET"
+    NEXTAUTH_URL="http://localhost:3000"
+    ```
 
-5. **Start development**
-   ```bash
-   npm run dev
-   ```
+4.  **Database Setup:**
+    Navigate to the `packages/db` directory and set up your database with Prisma:
+    ```bash
+    cd packages/db
+    pnpm prisma migrate dev --name init # Or the latest migration command
+    pnpm prisma generate
+    cd ../.. # Go back to the root directory
+    ```
 
-6. **Open applications**
-   - Web App: `http://localhost:3000`
-   - Docs: `http://localhost:3001`
+5.  **Run the development server:**
+    ```bash
+    pnpm dev
+    ```
+    The application should now be running on `http://localhost:3000`.
 
-### Environment Variables
-```env
-DATABASE_URL="postgresql://username:password@localhost:5432/algo_arena"
-NEXTAUTH_SECRET="your-auth-secret"
-NEXTAUTH_URL="http://localhost:3000"
+## Project Structure
+
 ```
+├── apps/
+│   └── web/                     # Next.js frontend application
+│       ├── app/
+│       │   ├── (home)/          # Pages accessible after authentication
+│       │   │   ├── contests/    # Contest listing and specific contest pages
+│       │   │   ├── problem-sets/ # Problem set listing and topic-specific pages
+│       │   │   └── solve/       # Problem solving interface
+│       │   └── api/             # Next.js API routes
+│       │       ├── (admin)/     # Admin-specific API endpoints
+│       │       ├── (contests)/  # Contest-related API endpoints
+│       │       └── auth/        # Authentication API endpoints
+│       └── components/          # Reusable React components (e.g., Code, Description, ProblemCard)
+│
+├── packages/
+│   └── db/                      # Prisma database configuration and client
+│       ├── prisma/              # Prisma schema and migrations
+│       └── src/                 # Database client initialization
+│
+├── .gitignore
+├── package.json
+├── pnpm-lock.yaml
+├── pnpm-workspace.yaml
+└── turbo.json                   # Turborepo configuration```
 
-## 📦 Package Management
+## API Endpoints
 
-### Adding Dependencies
+The `apps/web/app/api` directory contains various API endpoints:
 
-```bash
-# Add to specific workspace
-npm install <package> --workspace=web
-npm install <package> --workspace=docs
-npm install <package> --workspace=ui
+*   **Contest Management:**
+    *   `GET /api/contest`: Get all contests.
+    *   `GET /api/contest/[contestId]`: Get problems for a specific contest.
+    *   `GET /api/getContest/[contestId]`: Get details of a specific contest.
+    *   `POST /api/check-participant`: Check if a user is a participant in a contest.
+    *   `POST /api/join-Contest`: Allow a user to join a contest.
 
-# Add to root (affects all workspaces)
-npm install <package> -w
-```
+*   **Problem Management:**
+    *   `GET /api/getProblem/[id]`: Get a problem by its ID.
+    *   `GET /api/getTestCases/[id]`: Get test cases for a problem by its ID.
+    *   `GET /api/problems/[topic]`: Get problems filtered by a specific topic.
 
-### Workspace Dependencies
+*   **Authentication:**
+    *   `POST /api/auth/signup`: User registration.
+    *   `GET/POST /api/auth/[...nextauth]`: NextAuth.js authentication routes.
 
-```bash
-# Reference internal packages
-npm install @repo/ui --workspace=web
-```
+## Admin Functionality
 
-## 🏆 Best Practices
+The following API endpoints are available for administrative tasks:
 
-### Code Organization
-- Keep components in the `ui` package for reusability
-- Use TypeScript interfaces for prop definitions
-- Follow the established naming conventions
+*   `POST /api/(admin)/add-problem`: Add a new problem to the platform. Requires `title`, `statement`, `type`, `topic`, `testCaseInput`, `testCaseOutput`, and `explanation` in the request body.
+*   `POST /api/(admin)/add-testcase`: Add a new test case to an existing problem. Requires `problemId`, `testCaseInput`, `testCaseOutput`, and `explanation` in the request body.
 
-### Styling Guidelines
-- Use Tailwind utility classes
-- Prefix custom UI classes with `ui-`
-- Maintain responsive design principles
+## Contributing
 
-### Performance
-- Leverage Turborepo's caching for faster builds
-- Use Next.js Image optimization
-- Implement proper code splitting
+Contributions are welcome! Please feel free to open issues or submit pull requests.
 
-## 🔮 Roadmap
+## License
 
-### ✅ Completed Features
-- [x] Robust database schema with Prisma ORM
-- [x] User authentication and account management
-- [x] Problem categorization system
-- [x] Contest framework with participant tracking
-- [x] Submission history and status tracking
-- [x] Turborepo monorepo setup
-
-### 🚧 In Development
-- [ ] Code execution environment setup
-- [ ] Multi-language compiler integration
-- [ ] Real-time contest leaderboards
-- [ ] Problem difficulty rating system
-
-### 📋 Planned Features
-- [ ] Advanced analytics dashboard
-- [ ] Social features (following, discussions)
-- [ ] Problem recommendations
-- [ ] Mobile application
-- [ ] API rate limiting and security
-- [ ] Contest streaming and live updates
-- [ ] Editorial solutions and explanations
-- [ ] Team contests and collaborations
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Development Guidelines
-- Follow the existing code style
-- Add tests for new features
-- Update documentation as needed
-- Ensure all builds pass
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Built with [Turborepo](https://turborepo.com) by Vercel
-- UI powered by [Tailwind CSS](https://tailwindcss.com)
-- Framework by [Next.js](https://nextjs.org)
-
----
-
-**Algo Arena** - Where algorithms meet competition! 🏟️⚡
-
-*Empowering developers to solve, compete, and excel in algorithmic challenges.*
+[Specify your license here, e.g., MIT License]
